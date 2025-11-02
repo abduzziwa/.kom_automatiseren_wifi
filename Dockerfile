@@ -17,5 +17,9 @@ COPY . /app/
 # Expose port 8000
 EXPOSE 8000
 
-# Run Django server on container start
-CMD ["python", "manage.py", "runserver", "0.0.0.0:8000"]
+# Add environment variables for superuser
+ENV DJANGO_SUPERUSER_USERNAME=root
+ENV DJANGO_SUPERUSER_PASSWORD=root
+
+# Run migrations and create superuser, then start server
+CMD ["sh", "-c", "python manage.py migrate && python manage.py createsuperuser --noinput && python manage.py runserver 0.0.0.0:8000"]
