@@ -5,7 +5,7 @@ services:
     ports:
       - "8000:8000"
     environment:
-      - POSTGRES_HOST=host.docker.internal
-      - POSTGRES_DB=gildeSecOps
-      - POSTGRES_USER=postgres
-      - POSTGRES_PASSWORD=pass
+      - POSTGRES_HOST=172.23.231.75
+      - POSTGRES_DB=gildesecops
+      - POSTGRES_USER=radiususer
+      - POSTGRES_PASSWORD=radiuspassword
