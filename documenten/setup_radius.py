@@ -410,7 +410,7 @@ def main():
         install_postgresql()
         setup_database()
         configure_pg_authentication()
-        update_pg_hba_conf_remote_access():
+        update_pg_hba_conf_remote_access()
         install_freeradius()
         import_radius_schema()
         configure_freeradius_sql()
