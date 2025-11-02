@@ -299,6 +299,29 @@ def test_authentication():
         print("\n   ⚠️  Authentication test failed.")
         print("   💡 Debug with: sudo freeradius -X")
         print("   💡 Check logs: sudo journalctl -u freeradius -n 50")
+def update_pg_hba_conf_remote_access():
+    print_header("STEP 3B: Enabling Remote Access in pg_hba.conf")
+    # Locate pg_hba.conf
+    result = run_command(
+        "sudo -u postgres psql -t -P format=unaligned -c 'SHOW hba_file;'",
+        "Locating pg_hba.conf"
+    )
+    hba_file = result.stdout.strip()
+    print(f" 📄 Found pg_hba.conf at: {hba_file}")
+
+    # Backup original
+    run_command(f"cp {hba_file} {hba_file}.remote_backup", "Backing up pg_hba.conf for remote access")
+
+    # Add remote access line if not already present
+    remote_rule = f"host    {DB_NAME}    {DB_USER}    0.0.0.0/0    md5"
+    check_rule_cmd = f"grep -Fxq '{remote_rule}' {hba_file}"
+    rule_exists = subprocess.run(check_rule_cmd, shell=True).returncode == 0
+
+    if not rule_exists:
+        run_command(f"echo '{remote_rule}' >> {hba_file}", "Appending remote access rule to pg_hba.conf")
+        run_command("systemctl reload postgresql", "Reloading PostgreSQL after remote access update")
+    else:
+        print(" ✅ Remote access rule already exists in pg_hba.conf")
 
 # -------------------------------------------------------------------
 # Main Execution
@@ -387,6 +410,7 @@ def main():
         install_postgresql()
         setup_database()
         configure_pg_authentication()
+        update_pg_hba_conf_remote_access():
         install_freeradius()
         import_radius_schema()
         configure_freeradius_sql()
