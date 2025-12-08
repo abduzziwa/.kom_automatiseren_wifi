@@ -58,6 +58,13 @@ Restart PostgreSQL:
 sudo systemctl restart postgresql
 ```
 
+⚠️ Troubleshooting PostgreSQL Errors  
+If you encounter errors with PostgreSQL connections, you may need to update the host settings in another PostgreSQL configuration file. Open the file with:
+
+```bash
+sudo nano /etc/postgresql/<version>/main/pg_hba.conf
+--host    all    all    0.0.0.0/0    md5
+
 ### 5. Start Application
 ```bash
 sudo docker compose up
